@@ -1,10 +1,17 @@
 import React, { useState } from "react";
+import { getTrendingMovies } from "../api/tmdb-api";
 
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
   const [favorites, setFavorites] = useState([]);
   const [myReviews, setMyReviews] = useState({});
+  const [trendingMovies, setTrendingMovies] = useState([]);
+
+  const fetchTrendingMovies = async () => {
+    const movies = await getTrendingMovies();
+    setTrendingMovies(movies.results.map((m) => m.id));
+  }
 
   const addToFavorites = (movie) => {
     let newFavorites = [];
@@ -33,7 +40,10 @@ const MoviesContextProvider = (props) => {
   return (
     <MoviesContext.Provider
       value={{
+        trendingMovies,
         favorites,
+        myReviews,
+        fetchTrendingMovies,
         addToFavorites,
         removeFromFavorites,
         addReview,
